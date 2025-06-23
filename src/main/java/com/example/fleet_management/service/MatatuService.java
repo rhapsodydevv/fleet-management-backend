@@ -24,41 +24,69 @@ public class MatatuService {
         return matatuRepository.findAll();
     }
 
-    public Matatu getMatatuDetails(String plateNumber){
-        //Optional<Matatu> optionalMatatu = matatuRepository.findByPlateNumber(plateNumber);
-        Matatu matatu = matatuRepository.findByPlateNumber(plateNumber)
-                .orElseThrow(()-> new RuntimeException("Matatu not found"));
-        return matatu;
+//    public Matatu getMatatuDetails(String plateNumber){
+//        //Optional<Matatu> optionalMatatu = matatuRepository.findByPlateNumber(plateNumber);
+//        Matatu matatu = matatuRepository.findByPlateNumber(plateNumber)
+//                .orElseThrow(()-> new RuntimeException("Matatu not found"));
+//        return matatu;
+//    }
+
+    public Optional<Matatu> getMatatuDetails(String plateNumber){
+        return matatuRepository.findByPlateNumber(plateNumber);
     }
 
-    public String createMatatu(Matatu matatu){
+//    public String createMatatu(Matatu matatu){
+//        String plateNumber = matatu.getPlateNumber();
+//
+//        if(plateNumber==null || plateNumber.isBlank()){
+//            return "Plate number is required";
+//        }
+//
+//        plateNumber = plateNumber.replaceAll("\\s", "".toUpperCase());
+//        matatu.setPlateNumber(plateNumber);
+//
+//        Optional<Matatu> existing = matatuRepository.findByPlateNumber(plateNumber);
+//        if(existing.isPresent()){
+//            return "Matatu " + plateNumber + " already exists";
+//        }
+//
+//        matatuRepository.save(matatu);
+//        return "Matatu " + plateNumber + " created successfully";
+//    }
+
+    public Matatu createMatatu(Matatu matatu){
         String plateNumber = matatu.getPlateNumber();
-
-        if(plateNumber==null || plateNumber.isBlank()){
-            return "Plate number is required";
-        }
-
         plateNumber = plateNumber.replaceAll("\\s", "".toUpperCase());
         matatu.setPlateNumber(plateNumber);
-
         Optional<Matatu> existing = matatuRepository.findByPlateNumber(plateNumber);
-        if(existing.isPresent()){
-            return "Matatu " + plateNumber + " already exists";
-        }
 
-        matatuRepository.save(matatu);
-        return "Matatu " + plateNumber + " created successfully";
+        if(existing.isPresent()){
+            throw new IllegalArgumentException("Matatu already exists with plate number: " + plateNumber);        }
+
+        return  matatuRepository.save(matatu);
     }
 
-    public String deleteMatatu(String plateNumber){
+    public Matatu deleteMatatu(String plateNumber){
         plateNumber = plateNumber.replaceAll("\\s", "".toUpperCase());
         Optional<Matatu> existing = matatuRepository.findByPlateNumber(plateNumber);
-        if(existing.isEmpty()){
-            return "Matatu with number plate " + plateNumber + " does not exist";
+
+        if (existing.isEmpty()){
+            throw new IllegalArgumentException("Matatu with number plate " + plateNumber + " does not exist");
         }
         matatuRepository.deleteById(plateNumber);
-        return "Matatu with number plate " + plateNumber + " deleted successfully";
+
+        return existing.get();
     }
+//
+//    public String deleteMatatu(String plateNumber){
+//        plateNumber = plateNumber.replaceAll("\\s", "".toUpperCase());
+//        Optional<Matatu> existing = matatuRepository.findByPlateNumber(plateNumber);
+//        if(existing.isEmpty()){
+//            return "Matatu with number plate " + plateNumber + " does not exist";
+//        }
+//        matatuRepository.deleteById(plateNumber);
+//        return "Matatu with number plate " + plateNumber + " deleted successfully";
+//    }
 
     public String assignDriverToMatatu(String plateNumber, String email){
         Optional<Matatu> optionalMatatu= matatuRepository.findByPlateNumber(plateNumber);
