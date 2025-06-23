@@ -12,8 +12,11 @@ public class Matatu {
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     //private Long id;
 
-    private String route;
     private String status;
+    private String route;
+    private String departure;
+    private String destination;
+
 
     @OneToOne
     @JoinColumn(name = "driver_id")
@@ -44,6 +47,16 @@ public class Matatu {
         return status;}
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDeparture(){return departure;}
+    public void  setDeparture(String departure){
+        this.departure = departure;
+    }
+
+    public String getDestination(){return destination;}
+    public void  setDestination(String destination){
+        this.destination = destination;
     }
 
     public Employee getDriver(){
